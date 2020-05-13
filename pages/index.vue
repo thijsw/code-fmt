@@ -1,73 +1,64 @@
 <template>
-  <div class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        code-fmt
+  <div class="bg-gray-300 p-8">
+    <header>
+      <h1 class="font-medium text-gray-800 text-lg">
+        code-format<span class="text-gray-600">.com</span>
       </h1>
-      <h2 class="subtitle">
-        Format source code
+      <h2 class="text-gray-700">
+        Format source code using Prettier
       </h2>
-      <div class="links">
-        <a href="https://nuxtjs.org/" target="_blank" class="button--green">
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
+    </header>
+    <div class="flex mt-6 flex-1 max h-full text-sm">
+      <textarea
+        v-model="input"
+        class="w-1/2 rounded-lg h-full focus:outline-none bg-gray-100 py-5 px-6 font-mono mr-2 focus:shadow-outline"
+      ></textarea>
+      <div
+        class="relative w-1/2 rounded-lg text-white bg-gray-600 py-5 px-6 whitespace-pre font-mono ml-2 focus:shadow-outline overflow-scroll"
+      >
+        <div>{{ output }}</div>
+        <div
+          :class="{ 'opacity-0': !error, 'opacity-75': error }"
+          class="bg-gray-900 inset-0 absolute py-5 px-6 text-red-600 transition-all duration-150 font-semibold pointer-events-none"
         >
-          GitHub
-        </a>
+          {{ error }}
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+import { format } from 'prettier/standalone'
+import * as babylon from 'prettier/parser-babylon'
 
 export default {
-  components: {
-    Logo
+  data() {
+    return {
+      input: '',
+      output: '',
+      error: null
+    }
+  },
+
+  watch: {
+    input() {
+      try {
+        this.output = format(this.input, {
+          parser: 'babel',
+          plugins: [babylon]
+        })
+        this.error = null
+      } catch (error) {
+        this.error = error
+      }
+    }
   }
 }
 </script>
 
 <style>
-/* Sample `apply` at-rules with Tailwind CSS
-.container {
-  @apply min-h-screen flex justify-center items-center text-center mx-auto;
-}
-*/
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+.max {
+  max-height: calc(100% - 6rem);
 }
 </style>
