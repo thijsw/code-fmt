@@ -9,14 +9,18 @@
     <div class="flex p-8 flex-1 max h-full text-sm">
       <div
         ref="input"
-        class="flex w-1/2 rounded-lg h-full bg-gray-100 py-5 pl-4 pr-6 mr-2"
+        class="flex w-1/2 rounded-lg h-full bg-gray-100 py-5 px-4 mr-2"
       >
-        <div class="w-12 pr-4 text-gray-500 text-right">
+        <div
+          ref="lines"
+          class="w-12 pr-4 text-gray-500 text-right overflow-hidden font-mono"
+        >
           <ol>
             <li v-for="n in inputLines" :key="n">{{ n }}</li>
           </ol>
         </div>
         <textarea
+          ref="textarea"
           v-model="input"
           spellcheck="false"
           class="resize-none focus:outline-none w-full h-full bg-transparent font-mono whitespace-pre overflow-scroll"
@@ -166,6 +170,21 @@ export default {
         this.error = error
       }
     }
+  },
+
+  created() {
+    // Sync line numbers with textarea
+    this.$nextTick(() => {
+      if (!this.$refs.textarea) {
+        return
+      }
+      this.$refs.textarea.addEventListener('scroll', (event) => {
+        if (!this.$refs.lines) {
+          return
+        }
+        this.$refs.lines.scrollTop = event.target.scrollTop
+      })
+    })
   },
 
   head() {

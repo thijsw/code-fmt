@@ -27,7 +27,7 @@ export default {
       if (this.$route.path === this.to) {
         return `${this.color}-active active`
       }
-      return `hover:border-${this.color}-600 ${this.color}`
+      return this.color
     }
   }
 }
@@ -46,12 +46,24 @@ a:not(:hover, .active) {
   @apply text-white;
 }
 
+.blue:hover {
+  @apply border-blue-600;
+}
+
 .blue-active {
   @apply border-blue-700 bg-blue-600;
 }
 
+.purple:hover {
+  @apply border-purple-600;
+}
+
 .purple-active {
   @apply border-purple-700 bg-purple-600;
+}
+
+.yellow:hover {
+  @apply border-yellow-600;
 }
 
 .yellow-active {
