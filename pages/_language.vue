@@ -37,17 +37,28 @@
       </ul>
     </section>
     <div class="flex mt-6 flex-1 max h-full text-sm">
-      <textarea
-        v-model="input"
-        class="w-1/2 rounded-lg resize-none h-full focus:outline-none bg-gray-100 py-5 px-6 font-mono mr-2 focus:shadow-outline"
-      ></textarea>
+      <div
+        ref="input"
+        class="flex w-1/2 rounded-lg h-full bg-gray-100 py-5 pl-4 pr-6 whitespace-pre font-mono mr-2 focus:shadow-outline overflow-scroll"
+      >
+        <div class="w-12 pr-4 text-gray-500 text-right">
+          <ol>
+            <li v-for="n in inputLines" :key="n">{{ n }}</li>
+          </ol>
+        </div>
+        <textarea
+          v-model="input"
+          spellcheck="false"
+          class="resize-none focus:outline-none w-full h-full bg-transparent"
+        ></textarea>
+      </div>
       <div
         ref="output"
         class="relative flex w-1/2 rounded-lg text-white bg-gray-800 py-5 pl-4 pr-6 whitespace-pre font-mono ml-2 focus:shadow-outline overflow-scroll"
       >
         <div class="w-12 pr-4 text-gray-500 text-right">
           <ol>
-            <li v-for="n in lines" :key="n">{{ n }}</li>
+            <li v-for="n in outputLines" :key="n">{{ n }}</li>
           </ol>
         </div>
         <div v-html="highlighted" />
@@ -65,10 +76,13 @@
 <script>
 import { format } from 'prettier/standalone'
 import * as babylon from 'prettier/parser-babylon'
+import phpPlugin from '@prettier/plugin-php/standalone'
 import highlight from 'highlight.js/lib/core'
 import js from 'highlight.js/lib/languages/javascript'
+import php from 'highlight.js/lib/languages/php'
 
-highlight.registerLanguage('js', js)
+highlight.registerLanguage('babylon', js)
+highlight.registerLanguage('php', php)
 
 export default {
   data() {
@@ -80,15 +94,43 @@ export default {
   },
 
   computed: {
-    highlighted() {
-      return highlight.highlight('js', this.output, null, null).value
+    language() {
+      const { language } = this.$route.params
+
+      switch (language) {
+        case 'php':
+          return 'php'
+        default:
+          return 'babylon'
+      }
     },
 
-    lines() {
-      if (!this.output) {
-        return 0
+    plugin() {
+      if (this.language === 'babylon') {
+        return babylon
       }
-      return this.output.match(/\n/g).length
+
+      if (this.language === 'php') {
+        return phpPlugin
+      }
+
+      return null
+    },
+
+    highlighted() {
+      return highlight.highlight(this.language, this.output, true, null).value
+    },
+
+    inputLines() {
+      const matches = this.input.match(/\n/g)
+
+      return (matches && matches.length) + 1
+    },
+
+    outputLines() {
+      const matches = this.output.match(/\n/g)
+
+      return (matches && matches.length) + 1
     }
   },
 
@@ -96,8 +138,8 @@ export default {
     input() {
       try {
         this.output = format(this.input, {
-          parser: 'babel',
-          plugins: [babylon]
+          parser: this.language,
+          plugins: [this.plugin]
         })
         this.error = null
       } catch (error) {
