@@ -8,34 +8,7 @@
         Format source code using Prettier
       </h2>
     </header>
-    <section class="flex justify-end hidden">
-      <ul class="flex">
-        <li>
-          <nuxt-link
-            to="/mysql"
-            class="block hover:bg-gray-400 transition duration-150 rounded px-2 py-1 text-gray-800"
-          >
-            mysql
-          </nuxt-link>
-        </li>
-        <li>
-          <nuxt-link
-            to="/"
-            class="ml-2 block rounded px-2 py-1 bg-yellow-600 text-white"
-          >
-            js/babel
-          </nuxt-link>
-        </li>
-        <li>
-          <nuxt-link
-            to="/php"
-            class="ml-2 block rounded px-2 py-1 bg-purple-600 text-white"
-          >
-            php
-          </nuxt-link>
-        </li>
-      </ul>
-    </section>
+    <language-picker />
     <div class="flex mt-6 flex-1 max h-full text-sm">
       <div
         ref="input"
@@ -78,13 +51,22 @@ import { format } from 'prettier/standalone'
 import * as babylon from 'prettier/parser-babylon'
 import phpPlugin from '@prettier/plugin-php/standalone'
 import highlight from 'highlight.js/lib/core'
+import sqlFormatter from 'sql-formatter'
+
 import js from 'highlight.js/lib/languages/javascript'
 import php from 'highlight.js/lib/languages/php'
+import sql from 'highlight.js/lib/languages/sql'
+import LanguagePicker from '~/components/LanguagePicker'
 
 highlight.registerLanguage('babylon', js)
 highlight.registerLanguage('php', php)
+highlight.registerLanguage('sql', sql)
 
 export default {
+  components: {
+    LanguagePicker
+  },
+
   data() {
     return {
       input: '',
@@ -99,7 +81,8 @@ export default {
 
       switch (language) {
         case 'php':
-          return 'php'
+        case 'sql':
+          return language
         default:
           return 'babylon'
       }
@@ -137,6 +120,11 @@ export default {
   watch: {
     input() {
       try {
+        if (this.language === 'sql') {
+          this.output = sqlFormatter.format(this.input)
+          return
+        }
+
         this.output = format(this.input, {
           parser: this.language,
           plugins: [this.plugin]
@@ -152,8 +140,27 @@ export default {
   },
 
   head() {
+    let language = ''
+    switch (this.language) {
+      case 'babylon':
+        language = 'Javascript ES6 Babel'
+        break
+      case 'php':
+        language = 'PHP'
+        break
+      case 'sql':
+        language = 'SQL'
+    }
+
     return {
-      title: 'Format Javascript ES6 Babel code using Prettier online'
+      title: `Format ${language} code using Prettier online`,
+      meta: [
+        {
+          hid: 'index',
+          name: 'description',
+          content: `Format and beautify ${language} source code in an online editor`
+        }
+      ]
     }
   }
 }
