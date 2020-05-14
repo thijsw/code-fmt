@@ -67,6 +67,12 @@ export default {
     LanguagePicker
   },
 
+  validate({ params }) {
+    const { language } = params
+
+    return language === 'sql' || language === 'php' || !language
+  },
+
   data() {
     return {
       input: '',
