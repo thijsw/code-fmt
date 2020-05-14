@@ -2,12 +2,40 @@
   <div class="bg-gray-300 p-8">
     <header>
       <h1 class="font-medium text-gray-800 text-lg">
-        code-format<span class="text-gray-600">.com</span>
+        code-fmt<span class="text-gray-600">.com</span>
       </h1>
       <h2 class="text-gray-700">
         Format source code using Prettier
       </h2>
     </header>
+    <section class="flex justify-end hidden">
+      <ul class="flex">
+        <li>
+          <nuxt-link
+            to="/mysql"
+            class="block hover:bg-gray-400 transition duration-150 rounded px-2 py-1 text-gray-800"
+          >
+            mysql
+          </nuxt-link>
+        </li>
+        <li>
+          <nuxt-link
+            to="/"
+            class="ml-2 block rounded px-2 py-1 bg-yellow-600 text-white"
+          >
+            js/babel
+          </nuxt-link>
+        </li>
+        <li>
+          <nuxt-link
+            to="/php"
+            class="ml-2 block rounded px-2 py-1 bg-purple-600 text-white"
+          >
+            php
+          </nuxt-link>
+        </li>
+      </ul>
+    </section>
     <div class="flex mt-6 flex-1 max h-full text-sm">
       <textarea
         v-model="input"
@@ -15,8 +43,13 @@
       ></textarea>
       <div
         ref="output"
-        class="relative w-1/2 rounded-lg text-white bg-gray-800 py-5 px-6 whitespace-pre font-mono ml-2 focus:shadow-outline overflow-scroll"
+        class="relative flex w-1/2 rounded-lg text-white bg-gray-800 py-5 pl-4 pr-6 whitespace-pre font-mono ml-2 focus:shadow-outline overflow-scroll"
       >
+        <div class="w-12 pr-4 text-gray-500 text-right">
+          <ol>
+            <li v-for="n in lines" :key="n">{{ n }}</li>
+          </ol>
+        </div>
         <div v-html="highlighted" />
         <div
           :class="{ 'opacity-0': !error, 'opacity-75': error }"
@@ -34,7 +67,6 @@ import { format } from 'prettier/standalone'
 import * as babylon from 'prettier/parser-babylon'
 import highlight from 'highlight.js/lib/core'
 import js from 'highlight.js/lib/languages/javascript'
-import 'highlight.js/styles/atom-one-dark.css'
 
 highlight.registerLanguage('js', js)
 
@@ -50,6 +82,13 @@ export default {
   computed: {
     highlighted() {
       return highlight.highlight('js', this.output, null, null).value
+    },
+
+    lines() {
+      if (!this.output) {
+        return 0
+      }
+      return this.output.match(/\n/g).length
     }
   },
 
@@ -67,6 +106,12 @@ export default {
 
         this.error = error
       }
+    }
+  },
+
+  head() {
+    return {
+      title: 'Format Javascript ES6 Babel code using Prettier online'
     }
   }
 }
