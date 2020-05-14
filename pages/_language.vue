@@ -1,15 +1,12 @@
 <template>
-  <div class="bg-gray-300 p-8">
-    <header>
-      <h1 class="font-medium text-gray-800 text-lg">
+  <div class="bg-gray-300">
+    <header class="px-8 pt-6 flex items-center justify-between">
+      <h1 class="font-medium text-white text-lg bg-gray-800 rounded px-3 py-1">
         code-fmt<span class="text-gray-600">.com</span>
       </h1>
-      <h2 class="text-gray-700">
-        Format source code using Prettier
-      </h2>
+      <language-picker />
     </header>
-    <language-picker />
-    <div class="flex mt-6 flex-1 max h-full text-sm">
+    <div class="flex p-8 flex-1 max h-full text-sm">
       <div
         ref="input"
         class="flex w-1/2 rounded-lg h-full bg-gray-100 py-5 pl-4 pr-6 mr-2"
@@ -43,6 +40,15 @@
         </div>
       </div>
     </div>
+    <footer class="bg-white px-8 flex text-sm h-16">
+      <a
+        href="//github.com/thijsw/code-fmt"
+        class="flex block items-center w-full h-16 opacity-50 hover:opacity-100 transition duration-200"
+      >
+        <img class="h-4 w-4" src="~/assets/github.png" alt="GitHub icon" />
+        <span class="ml-2">Contribute on GitHub</span>
+      </a>
+    </footer>
   </div>
 </template>
 
@@ -191,6 +197,6 @@ export default {
 
 <style>
 .max {
-  max-height: calc(100% - 6rem);
+  max-height: calc(100% - 7.5rem);
 }
 </style>
