@@ -12,7 +12,7 @@
     <div class="flex mt-6 flex-1 max h-full text-sm">
       <div
         ref="input"
-        class="flex w-1/2 rounded-lg h-full bg-gray-100 py-5 pl-4 pr-6 whitespace-pre font-mono mr-2 focus:shadow-outline overflow-scroll"
+        class="flex w-1/2 rounded-lg h-full bg-gray-100 py-5 pl-4 pr-6 mr-2"
       >
         <div class="w-12 pr-4 text-gray-500 text-right">
           <ol>
@@ -22,7 +22,7 @@
         <textarea
           v-model="input"
           spellcheck="false"
-          class="resize-none focus:outline-none w-full h-full bg-transparent"
+          class="resize-none focus:outline-none w-full h-full bg-transparent font-mono whitespace-pre overflow-scroll"
         ></textarea>
       </div>
       <div
@@ -48,7 +48,7 @@
 
 <script>
 import { format } from 'prettier/standalone'
-import * as babylon from 'prettier/parser-babylon'
+import * as babel from 'prettier/parser-babylon'
 import phpPlugin from '@prettier/plugin-php/standalone'
 import highlight from 'highlight.js/lib/core'
 import sqlFormatter from 'sql-formatter'
@@ -58,7 +58,7 @@ import php from 'highlight.js/lib/languages/php'
 import sql from 'highlight.js/lib/languages/sql'
 import LanguagePicker from '~/components/LanguagePicker'
 
-highlight.registerLanguage('babylon', js)
+highlight.registerLanguage('babel', js)
 highlight.registerLanguage('php', php)
 highlight.registerLanguage('sql', sql)
 
@@ -72,6 +72,16 @@ export default {
 
     return language === 'sql' || language === 'php' || !language
   },
+
+  fetch() {
+    const key = `input.${this.language}`
+    const input = localStorage.getItem(key)
+    if (input) {
+      this.$nextTick(() => (this.input = input))
+    }
+  },
+
+  fetchOnServer: false,
 
   data() {
     return {
@@ -90,13 +100,13 @@ export default {
         case 'sql':
           return language
         default:
-          return 'babylon'
+          return 'babel'
       }
     },
 
     plugin() {
-      if (this.language === 'babylon') {
-        return babylon
+      if (this.language === 'babel') {
+        return babel
       }
 
       if (this.language === 'php') {
@@ -124,7 +134,14 @@ export default {
   },
 
   watch: {
+    language(lang) {
+      this.input = localStorage.getItem(`input.${lang}`)
+    },
+
     input() {
+      const key = `input.${this.language}`
+      localStorage.setItem(key, this.input)
+
       try {
         if (this.language === 'sql') {
           this.output = sqlFormatter.format(this.input)
@@ -148,7 +165,7 @@ export default {
   head() {
     let language = ''
     switch (this.language) {
-      case 'babylon':
+      case 'babel':
         language = 'Javascript ES6 Babel'
         break
       case 'php':
