@@ -23,12 +23,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: [
-    {
-      src: 'highlight.js/styles/atom-one-dark.css',
-      lang: 'css'
-    }
-  ],
+  css: [],
   /*
    ** Plugins to load before mounting the App
    */

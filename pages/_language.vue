@@ -30,6 +30,24 @@
         ref="output"
         class="relative flex w-1/2 rounded-lg text-white bg-gray-800 py-5 pl-4 pr-6 whitespace-pre font-mono ml-2 focus:shadow-outline overflow-scroll"
       >
+        <button
+          class="absolute top-0 right-0 pt-5 pr-4 focus:outline-none"
+          @click.prevent="copy"
+        >
+          <svg
+            class="transition duration-150 text-gray-500 w-8 h-8 hover:text-gray-200"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+            />
+          </svg>
+        </button>
         <div class="w-12 pr-4 text-gray-500 text-right">
           <ol>
             <li v-for="n in outputLines" :key="n">{{ n }}</li>
@@ -62,6 +80,7 @@ import * as babel from 'prettier/parser-babylon'
 import phpPlugin from '@prettier/plugin-php/standalone'
 import highlight from 'highlight.js/lib/core'
 import sqlFormatter from 'sql-formatter'
+import clipboardCopy from 'clipboard-copy'
 
 import js from 'highlight.js/lib/languages/javascript'
 import php from 'highlight.js/lib/languages/php'
@@ -143,6 +162,12 @@ export default {
     }
   },
 
+  methods: {
+    async copy() {
+      await clipboardCopy(this.output)
+    }
+  },
+
   watch: {
     language(lang) {
       this.input = localStorage.getItem(`input.${lang}`)
@@ -215,6 +240,8 @@ export default {
 </script>
 
 <style>
+@import 'highlight.js/styles/atom-one-dark.css';
+
 .max {
   max-height: calc(100% - 7.5rem);
 }
