@@ -28,7 +28,8 @@
       </div>
       <div
         ref="output"
-        class="relative flex w-1/2 rounded-lg text-white bg-gray-800 py-5 pl-4 pr-6 whitespace-pre font-mono ml-2 focus:shadow-outline overflow-scroll"
+        :class="{ 'overflow-scroll': !error, 'overflow-hidden': error }"
+        class="relative flex w-1/2 rounded-lg text-white bg-gray-800 py-5 pl-4 pr-6 whitespace-pre font-mono ml-2 focus:shadow-outline"
       >
         <button
           class="absolute top-0 right-0 pt-5 pr-4 focus:outline-none"
@@ -56,8 +57,11 @@
         <!-- eslint-disable-next-line -->
         <div v-html="highlighted" />
         <div
-          :class="{ 'opacity-0': !error, 'opacity-75': error }"
-          class="bg-gray-900 inset-0 absolute py-5 px-6 text-red-600 transition-all duration-150 font-semibold pointer-events-none"
+          :class="{
+            'opacity-0 pointer-events-none': !error,
+            'opacity-75 overflow-scroll': error
+          }"
+          class="bg-gray-900 inset-0 absolute py-5 px-6 text-red-600 transition-all duration-150 font-semibold"
         >
           {{ error }}
         </div>
