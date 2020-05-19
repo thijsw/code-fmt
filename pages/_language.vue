@@ -53,6 +53,7 @@
             <li v-for="n in outputLines" :key="n">{{ n }}</li>
           </ol>
         </div>
+        <!-- eslint-disable-next-line -->
         <div v-html="highlighted" />
         <div
           :class="{ 'opacity-0': !error, 'opacity-75': error }"
@@ -162,12 +163,6 @@ export default {
     }
   },
 
-  methods: {
-    async copy() {
-      await clipboardCopy(this.output)
-    }
-  },
-
   watch: {
     language(lang) {
       this.input = localStorage.getItem(`input.${lang}`)
@@ -210,6 +205,12 @@ export default {
         this.$refs.lines.scrollTop = event.target.scrollTop
       })
     })
+  },
+
+  methods: {
+    async copy() {
+      await clipboardCopy(this.output)
+    }
   },
 
   head() {
