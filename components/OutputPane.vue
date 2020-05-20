@@ -57,7 +57,7 @@ highlight.registerLanguage('sql', sql)
 
 export default {
   props: {
-    value: {
+    output: {
       type: String,
       required: true
     },
@@ -79,11 +79,11 @@ export default {
 
   computed: {
     highlighted() {
-      return highlight.highlight(this.language, this.value, true, null).value
+      return highlight.highlight(this.language, this.output, true, null).value
     },
 
     lines() {
-      const matches = this.value.match(/\n/g)
+      const matches = this.output.match(/\n/g)
 
       return (matches && matches.length) + 1
     }
@@ -100,7 +100,7 @@ export default {
 
   methods: {
     async copy() {
-      await clipboardCopy(this.value)
+      await clipboardCopy(this.output)
     }
   }
 }

@@ -1,30 +1,5 @@
 <template>
-  <div class="bg-gray-300">
-    <header class="px-8 pt-6 flex items-center justify-between">
-      <h1 class="font-medium text-white text-lg bg-gray-800 rounded px-3 py-1">
-        code-fmt<span class="text-gray-600">.com</span>
-      </h1>
-      <language-picker />
-    </header>
-    <div class="flex p-8 flex-1 max h-full text-sm">
-      <input-pane v-model="input" class="flex w-1/2 py-5 px-4 mr-2" />
-      <output-pane
-        :value="output"
-        :language="language"
-        :error="error"
-        class="flex w-1/2 py-5 pl-4 pr-6 ml-2"
-      />
-    </div>
-    <footer class="bg-white px-8 flex text-sm h-16">
-      <a
-        href="//github.com/thijsw/code-fmt"
-        class="flex block items-center w-full h-16 opacity-50 hover:opacity-100 transition duration-200"
-      >
-        <img class="h-4 w-4" src="~/assets/github.png" alt="GitHub icon" />
-        <span class="ml-2">Contribute on GitHub</span>
-      </a>
-    </footer>
-  </div>
+  <panes v-model="input" :output="output" :language="language" :error="error" />
 </template>
 
 <script>
@@ -33,15 +8,11 @@ import * as babel from 'prettier/parser-babylon'
 import phpPlugin from '@prettier/plugin-php/standalone'
 import sqlFormatter from 'sql-formatter'
 
-import LanguagePicker from '~/components/LanguagePicker'
-import InputPane from '~/components/InputPane'
-import OutputPane from '~/components/OutputPane'
+import Panes from '~/components/Panes'
 
 export default {
   components: {
-    OutputPane,
-    InputPane,
-    LanguagePicker
+    Panes
   },
 
   validate({ params }) {
@@ -147,9 +118,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.max {
-  max-height: calc(100% - 7.5rem);
-}
-</style>
