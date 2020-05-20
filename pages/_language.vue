@@ -4,10 +4,6 @@
 
 <script>
 import { format } from 'prettier/standalone'
-import * as babel from 'prettier/parser-babylon'
-import phpPlugin from '@prettier/plugin-php/standalone'
-import sqlFormatter from 'sql-formatter'
-
 import Panes from '~/components/Panes'
 
 export default {
@@ -35,7 +31,8 @@ export default {
     return {
       input: '',
       output: '',
-      error: null
+      error: null,
+      plugin: null
     }
   },
 
@@ -50,33 +47,48 @@ export default {
         default:
           return 'babel'
       }
-    },
-
-    plugin() {
-      if (this.language === 'babel') {
-        return babel
-      }
-
-      if (this.language === 'php') {
-        return phpPlugin
-      }
-
-      return null
     }
   },
 
   watch: {
-    language(lang) {
-      this.input = localStorage.getItem(`input.${lang}`)
+    language: {
+      async handler() {
+        const lang = this.language
+
+        if (lang === 'babel') {
+          this.plugin = await import('prettier/parser-babylon')
+        }
+
+        if (lang === 'php') {
+          this.plugin = await import('@prettier/plugin-php/standalone')
+        }
+
+        if (lang === 'sql') {
+          this.plugin = await import('sql-formatter')
+        }
+
+        this.parse()
+      },
+      immediate: true
     },
 
     input() {
       const key = `input.${this.language}`
       localStorage.setItem(key, this.input)
 
+      this.parse()
+    }
+  },
+
+  methods: {
+    parse() {
+      if (!this.plugin) {
+        return
+      }
+
       try {
         if (this.language === 'sql') {
-          this.output = sqlFormatter.format(this.input)
+          this.output = this.plugin.format(this.input)
           return
         }
 
