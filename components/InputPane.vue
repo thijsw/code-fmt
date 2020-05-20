@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="rounded-lg h-full bg-gray-100">
     <div
       ref="lines"
       class="w-12 pr-4 text-gray-500 text-right overflow-hidden font-mono"

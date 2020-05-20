@@ -7,50 +7,13 @@
       <language-picker />
     </header>
     <div class="flex p-8 flex-1 max h-full text-sm">
-      <input-pane
-        v-model="input"
-        class="flex w-1/2 rounded-lg h-full bg-gray-100 py-5 px-4 mr-2"
+      <input-pane v-model="input" class="flex w-1/2 py-5 px-4 mr-2" />
+      <output-pane
+        :value="output"
+        :language="language"
+        :error="error"
+        class="flex w-1/2 py-5 pl-4 pr-6 ml-2"
       />
-      <div
-        ref="output"
-        :class="{ 'overflow-scroll': !error, 'overflow-hidden': error }"
-        class="relative flex w-1/2 rounded-lg text-white bg-gray-800 py-5 pl-4 pr-6 whitespace-pre font-mono ml-2 focus:shadow-outline"
-      >
-        <button
-          class="absolute top-0 right-0 pt-5 pr-4 focus:outline-none"
-          @click.prevent="copy"
-        >
-          <svg
-            class="transition duration-150 text-gray-500 w-8 h-8 hover:text-gray-200"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-            />
-          </svg>
-        </button>
-        <div class="w-12 pr-4 text-gray-500 text-right">
-          <ol>
-            <li v-for="n in outputLines" :key="n">{{ n }}</li>
-          </ol>
-        </div>
-        <!-- eslint-disable-next-line -->
-        <div v-html="highlighted" />
-        <div
-          :class="{
-            'opacity-0 pointer-events-none': !error,
-            'opacity-75 overflow-scroll': error
-          }"
-          class="bg-gray-900 inset-0 absolute py-5 px-6 text-red-600 transition-all duration-150 font-semibold"
-        >
-          {{ error }}
-        </div>
-      </div>
     </div>
     <footer class="bg-white px-8 flex text-sm h-16">
       <a
@@ -68,22 +31,15 @@
 import { format } from 'prettier/standalone'
 import * as babel from 'prettier/parser-babylon'
 import phpPlugin from '@prettier/plugin-php/standalone'
-import highlight from 'highlight.js/lib/core'
 import sqlFormatter from 'sql-formatter'
-import clipboardCopy from 'clipboard-copy'
 
-import js from 'highlight.js/lib/languages/javascript'
-import php from 'highlight.js/lib/languages/php'
-import sql from 'highlight.js/lib/languages/sql'
 import LanguagePicker from '~/components/LanguagePicker'
 import InputPane from '~/components/InputPane'
-
-highlight.registerLanguage('babel', js)
-highlight.registerLanguage('php', php)
-highlight.registerLanguage('sql', sql)
+import OutputPane from '~/components/OutputPane'
 
 export default {
   components: {
+    OutputPane,
     InputPane,
     LanguagePicker
   },
@@ -135,16 +91,6 @@ export default {
       }
 
       return null
-    },
-
-    highlighted() {
-      return highlight.highlight(this.language, this.output, true, null).value
-    },
-
-    outputLines() {
-      const matches = this.output.match(/\n/g)
-
-      return (matches && matches.length) + 1
     }
   },
 
@@ -167,19 +113,11 @@ export default {
           parser: this.language,
           plugins: [this.plugin]
         })
+
         this.error = null
       } catch (error) {
-        // Scroll to top
-        this.$refs.output.scrollTop = 0
-
         this.error = error
       }
-    }
-  },
-
-  methods: {
-    async copy() {
-      await clipboardCopy(this.output)
     }
   },
 
@@ -211,8 +149,6 @@ export default {
 </script>
 
 <style>
-@import 'highlight.js/styles/atom-one-dark.css';
-
 .max {
   max-height: calc(100% - 7.5rem);
 }
