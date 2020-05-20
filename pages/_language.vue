@@ -7,25 +7,10 @@
       <language-picker />
     </header>
     <div class="flex p-8 flex-1 max h-full text-sm">
-      <div
-        ref="input"
+      <input-pane
+        v-model="input"
         class="flex w-1/2 rounded-lg h-full bg-gray-100 py-5 px-4 mr-2"
-      >
-        <div
-          ref="lines"
-          class="w-12 pr-4 text-gray-500 text-right overflow-hidden font-mono"
-        >
-          <ol>
-            <li v-for="n in inputLines" :key="n">{{ n }}</li>
-          </ol>
-        </div>
-        <textarea
-          ref="textarea"
-          v-model="input"
-          spellcheck="false"
-          class="resize-none focus:outline-none w-full h-full bg-transparent font-mono whitespace-pre overflow-scroll"
-        ></textarea>
-      </div>
+      />
       <div
         ref="output"
         :class="{ 'overflow-scroll': !error, 'overflow-hidden': error }"
@@ -91,6 +76,7 @@ import js from 'highlight.js/lib/languages/javascript'
 import php from 'highlight.js/lib/languages/php'
 import sql from 'highlight.js/lib/languages/sql'
 import LanguagePicker from '~/components/LanguagePicker'
+import InputPane from '~/components/InputPane'
 
 highlight.registerLanguage('babel', js)
 highlight.registerLanguage('php', php)
@@ -98,6 +84,7 @@ highlight.registerLanguage('sql', sql)
 
 export default {
   components: {
+    InputPane,
     LanguagePicker
   },
 
@@ -154,12 +141,6 @@ export default {
       return highlight.highlight(this.language, this.output, true, null).value
     },
 
-    inputLines() {
-      const matches = this.input.match(/\n/g)
-
-      return (matches && matches.length) + 1
-    },
-
     outputLines() {
       const matches = this.output.match(/\n/g)
 
@@ -194,21 +175,6 @@ export default {
         this.error = error
       }
     }
-  },
-
-  created() {
-    // Sync line numbers with textarea
-    this.$nextTick(() => {
-      if (!this.$refs.textarea) {
-        return
-      }
-      this.$refs.textarea.addEventListener('scroll', (event) => {
-        if (!this.$refs.lines) {
-          return
-        }
-        this.$refs.lines.scrollTop = event.target.scrollTop
-      })
-    })
   },
 
   methods: {
