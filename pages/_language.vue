@@ -45,7 +45,7 @@ export default {
         case 'sql':
           return language
         default:
-          return 'babel'
+          return 'javascript'
       }
     }
   },
@@ -55,7 +55,7 @@ export default {
       async handler() {
         const lang = this.language
 
-        if (lang === 'babel') {
+        if (lang === 'javascript') {
           this.plugin = await import('prettier/parser-babylon')
         }
 
@@ -93,7 +93,7 @@ export default {
         }
 
         this.output = format(this.input, {
-          parser: this.language,
+          parser: this.language === 'javascript' ? 'babel' : this.language,
           plugins: [this.plugin]
         })
 
@@ -107,8 +107,8 @@ export default {
   head() {
     let language = ''
     switch (this.language) {
-      case 'babel':
-        language = 'Javascript ES6 Babel'
+      case 'javascript':
+        language = 'Modern Javascript'
         break
       case 'php':
         language = 'PHP'

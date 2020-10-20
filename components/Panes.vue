@@ -1,15 +1,16 @@
 <template>
-  <div class="flex p-8 flex-1 max h-full text-sm">
+  <div class="flex">
     <input-pane
       :value="value"
-      class="flex w-1/2 py-5 px-4 mr-2"
+      :language="language"
+      class="flex w-1/2"
       @input="(input) => $emit('input', input)"
     />
     <output-pane
       :output="output"
       :language="language"
       :error="error"
-      class="flex w-1/2 py-5 pl-4 pr-6 ml-2"
+      class="flex w-1/2"
     />
   </div>
 </template>
@@ -17,6 +18,14 @@
 <script>
 import OutputPane from '~/components/OutputPane'
 import InputPane from '~/components/InputPane'
+import 'vue-prism-editor/dist/prismeditor.min.css'
+import 'prismjs/themes/prism-tomorrow.css'
+
+import 'prismjs/components/prism-markup-templating'
+import 'prismjs/components/prism-clike'
+import 'prismjs/components/prism-javascript'
+import 'prismjs/components/prism-php'
+import 'prismjs/components/prism-sql'
 
 export default {
   components: {
@@ -45,9 +54,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.max {
-  max-height: calc(100% - 7.5rem);
-}
-</style>

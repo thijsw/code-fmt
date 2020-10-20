@@ -2,33 +2,15 @@
   <div
     ref="output"
     :class="{ 'overflow-scroll': !error, 'overflow-hidden': error }"
-    class="relative rounded-lg text-white bg-gray-800 whitespace-pre font-mono focus:shadow-outline"
+    class="relative"
   >
-    <button
-      class="absolute top-0 right-0 pt-5 pr-4 focus:outline-none"
-      @click.prevent="copy"
-    >
-      <svg
-        class="transition duration-150 text-gray-500 w-8 h-8 hover:text-gray-200"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="1.5"
-          d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-        />
-      </svg>
-    </button>
-    <div class="w-12 pr-4 text-gray-500 text-right">
-      <ol>
-        <li v-for="line in lines" :key="line">{{ line }}</li>
-      </ol>
-    </div>
-    <!-- eslint-disable-next-line -->
-    <div v-html="highlighted" />
+    <prism-editor
+      :value="output"
+      line-numbers
+      readonly
+      :highlight="highlight"
+      class="output-editor"
+    />
     <div
       :class="{
         'opacity-0 pointer-events-none': !error,
@@ -42,20 +24,15 @@
 </template>
 
 <script>
-import clipboardCopy from 'clipboard-copy'
+import { PrismEditor } from 'vue-prism-editor'
 
-import 'highlight.js/styles/atom-one-dark.css'
-
-import highlight from 'highlight.js/lib/core'
-import js from 'highlight.js/lib/languages/javascript'
-import php from 'highlight.js/lib/languages/php'
-import sql from 'highlight.js/lib/languages/sql'
-
-highlight.registerLanguage('babel', js)
-highlight.registerLanguage('php', php)
-highlight.registerLanguage('sql', sql)
+import { highlight as prism, languages } from 'prismjs/components/prism-core'
 
 export default {
+  components: {
+    PrismEditor
+  },
+
   props: {
     output: {
       type: String,
@@ -66,7 +43,7 @@ export default {
       type: String,
       required: true,
       validator(value) {
-        return ['babel', 'php', 'sql'].includes(value)
+        return ['javascript', 'php', 'sql'].includes(value)
       }
     },
 
@@ -74,18 +51,6 @@ export default {
       type: Error,
       required: false,
       default: null
-    }
-  },
-
-  computed: {
-    highlighted() {
-      return highlight.highlight(this.language, this.output, true, null).value
-    },
-
-    lines() {
-      const matches = this.output.match(/\n/g)
-
-      return (matches && matches.length) + 1
     }
   },
 
@@ -99,9 +64,27 @@ export default {
   },
 
   methods: {
-    async copy() {
-      await clipboardCopy(this.output)
+    highlight() {
+      return prism(this.output, languages[this.language])
     }
   }
 }
 </script>
+
+<style>
+.output-editor {
+  @apply font-mono text-sm leading-6 p-2 text-gray-800 bg-gray-100;
+}
+
+.output-editor .token.punctuation {
+  @apply text-gray-500 opacity-100;
+}
+
+.output-editor .token.selector,
+.output-editor .token.important,
+.output-editor .token.atrule,
+.output-editor .token.keyword,
+.output-editor .token.builtin {
+  color: #d877d9;
+}
+</style>
