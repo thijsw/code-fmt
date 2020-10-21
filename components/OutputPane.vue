@@ -4,13 +4,15 @@
     :class="{ 'overflow-scroll': !error, 'overflow-hidden': error }"
     class="relative"
   >
-    <prism-editor
-      :value="output"
-      line-numbers
-      readonly
-      :highlight="highlight"
-      class="output-editor"
-    />
+    <client-only>
+      <prism-editor
+        :value="output"
+        line-numbers
+        readonly
+        :highlight="highlight"
+        class="output-editor"
+      />
+    </client-only>
     <div
       :class="{
         'opacity-0 pointer-events-none': !error,

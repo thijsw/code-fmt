@@ -1,12 +1,14 @@
 <template>
   <div>
-    <prism-editor
-      :value="value"
-      line-numbers
-      :highlight="highlight"
-      class="input-editor"
-      @input="(code) => $emit('input', code)"
-    />
+    <client-only>
+      <prism-editor
+        :value="value"
+        line-numbers
+        :highlight="highlight"
+        class="input-editor"
+        @input="(code) => $emit('input', code)"
+      />
+    </client-only>
   </div>
 </template>
 
