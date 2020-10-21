@@ -74,6 +74,7 @@ export default {
 </script>
 
 <style>
+/* purgecss start ignore */
 .output-editor {
   @apply font-mono text-sm leading-6 p-2 text-gray-800 bg-gray-100;
 }
@@ -89,4 +90,5 @@ export default {
 .output-editor .token.builtin {
   color: #d877d9;
 }
+/* purgecss end ignore */
 </style>

@@ -46,6 +46,7 @@ export default {
 </script>
 
 <style>
+/* purgecss start ignore */
 .input-editor {
   @apply font-mono text-sm leading-6 p-2 text-gray-100 bg-gray-900;
 }
@@ -53,4 +54,5 @@ export default {
 .prism-editor__textarea:focus {
   @apply outline-none;
 }
+/* purgecss end ignore */
 </style>

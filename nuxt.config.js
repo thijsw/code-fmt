@@ -17,7 +17,7 @@ export default {
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
   },
   purgeCSS: {
-    whitelistPatterns: [/^hljs/]
+    whitelistPatterns: [/^prism/]
   },
   /*
    ** Customize the progress-bar color
@@ -26,7 +26,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: [],
+  css: ['vue-prism-editor/dist/prismeditor.min.css'],
   /*
    ** Plugins to load before mounting the App
    */
