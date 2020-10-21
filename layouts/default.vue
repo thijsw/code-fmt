@@ -6,7 +6,7 @@
       </h1>
       <language-picker />
     </header>
-    <nuxt class="flex-1" />
+    <nuxt class="flex-1 h-full" />
     <footer class="px-8 flex text-sm h-16 absolute bottom-0">
       <a
         href="//github.com/thijsw/code-fmt"
