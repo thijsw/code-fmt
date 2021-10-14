@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import 'vue-prism-editor/dist/prismeditor.min.css'
 import { format } from 'prettier/standalone'
 import Panes from '~/components/Panes'
 
@@ -56,7 +57,7 @@ export default {
         const lang = this.language
 
         if (lang === 'javascript') {
-          this.plugin = await import('prettier/parser-babylon')
+          this.plugin = await import('prettier/parser-babel')
         }
 
         if (lang === 'php') {
