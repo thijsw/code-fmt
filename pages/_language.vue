@@ -53,17 +53,24 @@ export default {
   },
 
   fetch() {
-    const input = localStorage.getItem(`input.${this.language}`)
     const configuration = localStorage.getItem(`configuration.${this.language}`)
+    const defaultConfiguration = this.language === 'sql' ?
+      {
+        language: 'sql',
+        indent: '  ',
+        uppercase: true,
+        linesBetweenQueries: 1
+      } : {
+        trailingComma: 'es5',
+        tabWidth: 2,
+        semi: false,
+        singleQuote: true
+      }
+
+    this.configuration = configuration || JSON.stringify(defaultConfiguration, null, 2)
 
     this.$nextTick(() => {
-      this.input = input || ''
-      this.configuration = configuration || '{\n' +
-        '  "trailingComma": "es5",\n' +
-        '  "tabWidth": 2,\n' +
-        '  "semi": false,\n' +
-        '  "singleQuote": true\n' +
-        '}'
+      this.input = localStorage.getItem(`input.${this.language}`) || ''
     })
   },
 
@@ -156,13 +163,15 @@ export default {
       }
 
       try {
+        const config = this.config || {}
+
         if (this.language === 'sql') {
-          this.input = this.plugin.format(this.input)
+          this.input = this.plugin.format(this.input, config)
           return
         }
 
         this.input = format(this.input, {
-          ...(this.config || {}),
+          ...config,
           parser: this.language === 'javascript' ? 'babel' : this.language,
           plugins: [this.plugin]
         })
