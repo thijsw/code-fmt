@@ -191,6 +191,10 @@ export default {
   @apply font-mono text-sm leading-6 p-2 text-gray-100 bg-gray-900;
 }
 
+.input-editor .prism-editor__container {
+  @apply h-full;
+}
+
 .prism-editor__textarea:focus {
   @apply outline-none;
 }
