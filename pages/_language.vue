@@ -1,14 +1,22 @@
 <template>
   <div class="flex">
     <client-only>
-      <prism-editor
-        v-model="input"
-        :language="language"
-        line-numbers
-        :highlight="highlight"
-        class="input-editor w-4/5"
-        @input="(code) => $emit('input', code)"
-      />
+      <div class="w-4/5 relative">
+        <prism-editor
+          v-model="input"
+          :language="language"
+          line-numbers
+          :highlight="highlight"
+          class="input-editor"
+          @input="(code) => $emit('input', code)"
+        />
+        <aside v-if="error" class="space-x-4 flex rounded bg-gray-200 px-4 py-3 absolute bottom-4 right-4 max-w-lg shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 my-1 flex-shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-gray-900">{{ error }}</p>
+        </aside>
+      </div>
     </client-only>
     <div class="w-1/5 bg-gray-700 p-4">
       <textarea v-model="configuration" placeholder="JSON configuration" :class="{ 'border-transparent': config, 'border-red-400': !config }" class="p-2 bg-gray-900 text-sm text-white focus:bg-gray-900 rounded font-mono w-full h-48 focus:outline-none border-2 transition-colors duration-200"></textarea>
